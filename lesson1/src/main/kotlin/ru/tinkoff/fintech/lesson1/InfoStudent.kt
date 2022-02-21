@@ -1,11 +1,10 @@
 package ru.tinkoff.fintech.lesson1
 
-import ru.tinkoff.fintech.lesson1.Student
 
 class InfoStudent (private val student : Student) {
 
     fun getInfoStudent() {
-        "ru.tinkoff.fintech.lesson1.Student ${student.lastName} ${student.firstName} has a middle mark : ${student.getMiddleMark()} ".characteristic()
+        "Student ${student.lastName} ${student.firstName} has a middle mark : ${student.getMiddleMark()} ".characteristic()
     }
 
     private fun String.characteristic () {
