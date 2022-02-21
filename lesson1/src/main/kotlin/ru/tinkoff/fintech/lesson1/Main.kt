@@ -1,3 +1,4 @@
+package ru.tinkoff.fintech.lesson1
 import kotlin.random.Random
 
 
@@ -13,9 +14,19 @@ fun main(args: Array<String>) {
     println("Studying years of mastery student : ${masteryStudent.getYearsOfStudy()} ")
 
     println("Set a practice place for mastery student")
-    masteryStudent.go2practicePlace("Tinkoff")
+    masteryStudent.setPracticePlace("Tinkoff", 7)
     println("Set a curator for bachelor student ")
     bachelorStudent.setCurator("Dmitrii Smirnov")
+
+    println("Set a scholarship for mastery student")
+    masteryStudent.scholarship = 3000
+    println("Set a scholarship for bachelor student ")
+    bachelorStudent.scholarship = 2000
+
+    println("Now mastery student go to practice")
+    masteryStudent.go2practicePlace()
+    println("How much time for practice left : ${masteryStudent.practiceTimeLeft()}")
+
 
     val universityStudents = listOf(bachelorStudent, masteryStudent)
     universityStudents.forEach { it.printName() }
@@ -27,6 +38,9 @@ fun main(args: Array<String>) {
     for (i in 1..7) {
         masteryStudent.setMark(Random.nextInt(3, 5))
     }
+
+    println("Mastery student scholarship : ${masteryStudent.countScholarship()}")
+    println("Bachelor student scholarship : ${bachelorStudent.countScholarship()}")
 
     val infoStudent = InfoStudent(bachelorStudent)
     val infoStudent2 = InfoStudent(masteryStudent)
