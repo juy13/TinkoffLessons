@@ -1,8 +1,10 @@
 package ru.tinkoff.fintech.lesson1
+
+import java.math.BigDecimal
 import kotlin.random.Random
 
 
-fun main(args: Array<String>) {
+fun main() {
 
     println("Create a bachelor student Ivan Ivonov")
     val bachelorStudent = BachelorStudent("Ivan", "Ivanov")
@@ -19,9 +21,9 @@ fun main(args: Array<String>) {
     bachelorStudent.setCurator("Dmitrii Smirnov")
 
     println("Set a scholarship for mastery student")
-    masteryStudent.scholarship = 3000
+    masteryStudent.scholarship = BigDecimal(3000)
     println("Set a scholarship for bachelor student ")
-    bachelorStudent.scholarship = 2000
+    bachelorStudent.scholarship = BigDecimal(3000)
 
     println("Now mastery student go to practice")
     masteryStudent.go2practicePlace()
@@ -39,8 +41,8 @@ fun main(args: Array<String>) {
         masteryStudent.setMark(Random.nextInt(3, 5))
     }
 
-    println("Mastery student scholarship : ${masteryStudent.countScholarship()}")
-    println("Bachelor student scholarship : ${bachelorStudent.countScholarship()}")
+    println("Mastery student scholarship : ${masteryStudent.countScholarship().setScale(2)}")
+    println("Bachelor student scholarship : ${bachelorStudent.countScholarship().setScale(2)}")
 
     val infoStudent = InfoStudent(bachelorStudent)
     val infoStudent2 = InfoStudent(masteryStudent)

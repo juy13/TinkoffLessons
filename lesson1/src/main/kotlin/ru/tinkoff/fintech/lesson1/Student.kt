@@ -1,20 +1,22 @@
 package ru.tinkoff.fintech.lesson1
 
-abstract class Student (val firstName : String, val lastName : String) {
+import java.math.BigDecimal
 
-    private var middleMark : Float = 0F
-    private val listOfMarks : MutableList<Int> = mutableListOf()
-    abstract var scholarship: Int
+abstract class Student(val firstName: String, val lastName: String) {
+
+    private var middleMark: Float = 0F
+    private val listOfMarks: MutableList<Int> = mutableListOf()
+    abstract var scholarship: BigDecimal
 
     fun printName() = println("First name : $firstName, Last name : $lastName")
 
-    abstract fun getYearsOfStudy () : String
-    fun setMark (mark : Int) {
+    abstract fun getYearsOfStudy(): String
+    fun setMark(mark: Int) {
         listOfMarks.add(mark)
         middleMark = (listOfMarks.sum().toFloat() / listOfMarks.size.toFloat())
     }
 
-    abstract fun countScholarship() : Float
+    abstract fun countScholarship(): BigDecimal
 
     fun getMiddleMark() = middleMark
 
