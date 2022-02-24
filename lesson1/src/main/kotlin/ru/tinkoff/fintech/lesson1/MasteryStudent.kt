@@ -12,7 +12,7 @@ class MasteryStudent(firstName: String, lastName: String) : Student(firstName, l
     override fun getYearsOfStudy() = "2 years"
 
     override fun countScholarship(): BigDecimal {
-        return if (practicePlace != "") {
+        return if (practicePlace.isNotEmpty()) {
             scholarship + scholarship * (BigDecimal.valueOf(0.3)) + (scholarship *
                     when {
                         (this.getMiddleMark() >= 3 && this.getMiddleMark() < 4) -> BigDecimal.valueOf(0.2)
