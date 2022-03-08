@@ -11,11 +11,10 @@ class InfoStudent(private val student: Student) {
         print(this)
         when {
             (student.getMiddleMark() >= 3 && student.getMiddleMark() < 4) -> println("C student")
-            (student.getMiddleMark() > 4 && student.getMiddleMark() < 5) -> println("B student")
+            (student.getMiddleMark() >= 4 && student.getMiddleMark() < 5) -> println("B student")
             (student.getMiddleMark() == 5F) -> println("A student")
-            else -> println("Too bad")
+            else -> println("too bad")
         }
-
     }
 
 }

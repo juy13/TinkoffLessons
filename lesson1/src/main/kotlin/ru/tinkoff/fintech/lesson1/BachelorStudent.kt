@@ -17,7 +17,7 @@ class BachelorStudent(firstName: String, lastName: String) : Student(firstName, 
         return scholarship + (scholarship *
                 when {
                     (this.getMiddleMark() >= 3 && this.getMiddleMark() < 4) -> BigDecimal.valueOf(0.2)
-                    (this.getMiddleMark() > 4 && this.getMiddleMark() < 5) -> BigDecimal.valueOf(0.3)
+                    (this.getMiddleMark() >= 4 && this.getMiddleMark() < 5) -> BigDecimal.valueOf(0.3)
                     (this.getMiddleMark() == 5F) -> BigDecimal.valueOf(0.4)
                     else -> BigDecimal.valueOf(0.0)
                 })
