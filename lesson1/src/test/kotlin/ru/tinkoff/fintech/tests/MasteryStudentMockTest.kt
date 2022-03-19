@@ -5,7 +5,6 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -15,22 +14,23 @@ import ru.tinkoff.fintech.lesson1.MasteryStudent
 
 
 @ExtendWith(MockKExtension::class)
-class MockTest {
+class MasteryStudentMockTest {
 
     @MockK
     lateinit var masteryStudent: MasteryStudent
+    private lateinit var infoStudent : InfoStudent
 
     @BeforeEach
     fun init() {
         every { masteryStudent.firstName } returns "Dima"
         every { masteryStudent.lastName } returns "Chao"
+        infoStudent = InfoStudent(masteryStudent)
+
     }
 
     @Test
     fun `test Mastery B student with mock`() {
         every { masteryStudent.getMiddleMark() } returns 4.55F
-
-        val infoStudent = InfoStudent(masteryStudent)
 
         val output = tapSystemOut {
             infoStudent.getInfoStudent()
@@ -44,8 +44,6 @@ class MockTest {
     fun `test Mastery C student with mock`() {
         every { masteryStudent.getMiddleMark() } returns 3.55F
 
-        val infoStudent = InfoStudent(masteryStudent)
-
         val output = tapSystemOut {
             infoStudent.getInfoStudent()
         }
@@ -58,8 +56,6 @@ class MockTest {
     fun `test Mastery A student with mock`() {
         every { masteryStudent.getMiddleMark() } returns 5F
 
-        val infoStudent = InfoStudent(masteryStudent)
-
         val output = tapSystemOut {
             infoStudent.getInfoStudent()
         }
@@ -71,8 +67,6 @@ class MockTest {
     @Test
     fun `test Mastery a bad student with mock`() {
         every { masteryStudent.getMiddleMark() } returns 2.66F
-
-        val infoStudent = InfoStudent(masteryStudent)
 
         val output = tapSystemOut {
             infoStudent.getInfoStudent()
