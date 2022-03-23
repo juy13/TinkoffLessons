@@ -16,7 +16,7 @@ class MasteryStudent(firstName: String, lastName: String) : Student(firstName, l
             scholarship + scholarship * (BigDecimal.valueOf(0.3)) + (scholarship *
                     when {
                         (this.getMiddleMark() >= 3 && this.getMiddleMark() < 4) -> BigDecimal.valueOf(0.2)
-                        (this.getMiddleMark() > 4 && this.getMiddleMark() < 5) -> BigDecimal.valueOf(0.3)
+                        (this.getMiddleMark() >= 4 && this.getMiddleMark() < 5) -> BigDecimal.valueOf(0.3)
                         (this.getMiddleMark() == 5F) -> BigDecimal.valueOf(0.4)
                         else -> BigDecimal.valueOf(0.0)
                     })
@@ -24,7 +24,7 @@ class MasteryStudent(firstName: String, lastName: String) : Student(firstName, l
             scholarship + (scholarship *
                     when {
                         (this.getMiddleMark() >= 3 && this.getMiddleMark() < 4) -> BigDecimal.valueOf(0.2)
-                        (this.getMiddleMark() > 4 && this.getMiddleMark() < 5) -> BigDecimal.valueOf(0.3)
+                        (this.getMiddleMark() >= 4 && this.getMiddleMark() < 5) -> BigDecimal.valueOf(0.3)
                         (this.getMiddleMark() == 5F) -> BigDecimal.valueOf(0.4)
                         else -> BigDecimal.valueOf(0.0)
                     })
