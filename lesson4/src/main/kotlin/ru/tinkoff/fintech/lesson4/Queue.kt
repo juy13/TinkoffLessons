@@ -9,38 +9,37 @@ class Queue<E> {
     private var queueSize = INIT_SIZE
     private var size = 0
 
-    fun element() : Any? {
+    fun element() : E? {
         if (size == 0)
             throw NoSuchElementException("queue is empty")
-        return queue[0]
+        return queue[0] as E?
     }
 
-    fun remove(): Any? {
+    fun remove(): E? {
         if (size == 0)
             throw NoSuchElementException("queue is empty")
+        return getElement()
+    }
+
+    fun peek(): E? {
+        if (size == 0)
+            return null
+        return queue[0] as E?
+    }
+
+    fun poll(): E? {
+        if (size == 0)
+            return null
+        return getElement()
+    }
+
+    private fun getElement() : E? {
         val retVal = queue[0]
         val newStack = arrayOfNulls<Any>(queueSize)
         queue.copyInto(newStack, 0, 1, size)
         queue = newStack
         size -= 1
-        return retVal
-    }
-
-    fun peek(): Any? {
-        if (size == 0)
-            return null
-        return queue[0]
-    }
-
-    fun poll(): Any? {
-        if (size == 0)
-            return null
-        val retVal = queue[0]
-        val newStack = arrayOfNulls<Any>(queueSize)
-        queue.copyInto(newStack, 0, 1, size)
-        queue = newStack
-        size -= 1
-        return retVal
+        return retVal as E?
     }
 
     fun offer(obj : E) : Boolean {

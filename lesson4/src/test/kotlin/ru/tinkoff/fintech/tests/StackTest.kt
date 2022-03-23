@@ -1,17 +1,16 @@
 package ru.tinkoff.fintech.tests
 
-import io.mockk.InternalPlatformDsl.toArray
 import org.junit.jupiter.api.Test
 import ru.tinkoff.fintech.lesson4.Stack
 import kotlin.test.assertEquals
 
-class TestStack {
+class StackTest {
 
     @Test
     fun `test stack for push` () {
         val stack = Stack<Int>()
-
-        assertEquals(true, stack.push(3))
+        val ret = stack.push(3)
+        assertEquals(true, ret)
     }
 
     @Test
@@ -24,7 +23,8 @@ class TestStack {
             push(1)
         }
 
-        assertEquals(5, stack.size())
+        val size = stack.size()
+        assertEquals(5, size)
     }
 
     @Test
@@ -38,8 +38,10 @@ class TestStack {
         }
         val stackArray = arrayOf(3, 5, 6, 7, 1)
         stackArray.reverse()
+
         for (el in stackArray) {
-            assertEquals(el, stack.pop())
+            val element = stack.pop()
+            assertEquals(el, element)
         }
     }
 
@@ -47,29 +49,30 @@ class TestStack {
     fun `test stack for pop` () {
         val stack = Stack<Int>()
         stack.push(3)
-        assertEquals(3, stack.pop())
+        val element = stack.pop()
+        assertEquals(3, element)
     }
 
     @Test
     fun `test stack for pop Null` () {
         val stack = Stack<Int>()
-
-        assertEquals(null, stack.pop())
+        val element = stack.pop()
+        assertEquals(null, element)
     }
 
     @Test
     fun `test stack for peek` () {
         val stack = Stack<Int>()
         stack.push(3)
-
-        assertEquals(3, stack.peek())
+        val element = stack.peek()
+        assertEquals(3, element)
     }
 
     @Test
     fun `test stack for peek Null` () {
         val stack = Stack<Int>()
-
-        assertEquals(null, stack.peek())
+        val element = stack.peek()
+        assertEquals(null, element)
     }
 
 }

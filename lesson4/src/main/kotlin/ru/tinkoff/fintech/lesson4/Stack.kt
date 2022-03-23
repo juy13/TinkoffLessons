@@ -22,17 +22,17 @@ class Stack<E> {
         return false
     }
 
-    fun pop() : Any? {
+    fun pop() : E? {
         if ( pointer == 0 )
             return null
         pointer -= 1
-        return stack[pointer]
+        return stack[pointer] as E?
     }
 
-    fun peek() : Any? {
+    fun peek() : E? {
         if ( pointer == 0 )
             return null
-        return stack[pointer - 1]
+        return stack[pointer - 1] as E?
     }
 
     private fun resize(lengthOfNewArray : Int) {
