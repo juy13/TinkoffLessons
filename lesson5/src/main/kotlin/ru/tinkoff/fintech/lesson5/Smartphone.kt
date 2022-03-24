@@ -7,5 +7,8 @@ data class Smartphone (
     val model : String,
     val type : String,
     val price : BigDecimal,
-    val OSVersion : String
-        )
+    val OSVersion : String)
+
+enum class Characteristics {
+    NAME, MODEL, TYPE, PRICE, OSVERSION
+}

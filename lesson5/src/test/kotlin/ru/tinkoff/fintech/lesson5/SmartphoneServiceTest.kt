@@ -1,5 +1,6 @@
 package ru.tinkoff.fintech.lesson5
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
@@ -44,7 +45,43 @@ class SmartphoneServiceTest {
     private val smartphones = listOf(iphone, samsungA32, htcWindowsPhone, blackBerryClassic, nokia3310, nokia3210)
 
     @Test
-    fun `test grouping function` () {
-        println(SmartphoneService.groupingByType(smartphones, 1))
+    fun `test grouping smartphone function` () {
+        val groupedSmartphones = SmartphoneService.groupingByType(smartphones, Characteristics.TYPE)
+        val amountOfSmartphonesType = groupedSmartphones["smartphone"]?.size
+
+        assertEquals(3, amountOfSmartphonesType)
     }
+
+    @Test
+    fun `test grouping price function` () {
+        val groupedSmartphones = SmartphoneService.groupingByType(smartphones, Characteristics.PRICE)
+        val firstKey = groupedSmartphones.keys.first().toString()
+
+        assertEquals("1000", firstKey)
+    }
+
+    @Test
+    fun `test filter price function` () {
+        val filteredSmartphones = SmartphoneService.filterByPrice(smartphones) { b: Int -> b > 100 }
+        val smartphonesList = listOf(iphone, samsungA32, htcWindowsPhone)
+        var i = 0
+        while (i < 3) {
+            assertEquals(smartphonesList[i].name, filteredSmartphones[i])
+            i += 1
+        }
+    }
+
+    @Test
+    fun `test translate function and price` () {
+        val filteredSmartphones = SmartphoneService.translateEsp(smartphones)
+
+        assertEquals(BigDecimal.valueOf(910).setScale(2), filteredSmartphones.first().price)
+    }
+
+    @Test
+    fun `test translate function and translation` () {
+        val filteredSmartphones = SmartphoneService.translateEsp(smartphones)
+        assertEquals("Manzana", filteredSmartphones.first().name)
+    }
+
 }
