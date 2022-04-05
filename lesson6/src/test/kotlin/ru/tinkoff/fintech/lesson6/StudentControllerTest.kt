@@ -25,11 +25,10 @@ import org.springframework.util.LinkedMultiValueMap
 import ru.tinkoff.fintech.lesson6.student.model.FullName
 import ru.tinkoff.fintech.lesson6.student.model.StudentInfo
 import ru.tinkoff.fintech.lesson6.student.service.StudentClient
-import kotlin.random.Random
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class Lesson6ApplicationTests @Autowired constructor(private val mockMvc: MockMvc, private val objectMapper: ObjectMapper)   {
+class StudentControllerTest @Autowired constructor(private val mockMvc: MockMvc, private val objectMapper: ObjectMapper)   {
 
 	@MockkBean
 	private lateinit var studentClient: StudentClient
