@@ -1,5 +1,5 @@
 spring:
-  application.name: spring-demo
+  application.name: university
   profiles.active: dev
 server.port: 9000
 
