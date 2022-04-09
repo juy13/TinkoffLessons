@@ -4,7 +4,7 @@ import java.math.BigDecimal
 
 object SmartphoneService {
 
-    fun groupingByType(collection: Sequence<Smartphone>, typeOfGrouping: Characteristics): Map<Any, List<Smartphone>> {
+    fun groupingByType(collection: Collection<Smartphone>, typeOfGrouping: Characteristics): Map<Any, List<Smartphone>> {
         return when (typeOfGrouping) {
             Characteristics.TYPE -> collection.groupBy{it.type}
             Characteristics.MODEL -> collection.groupBy{it.model}
@@ -14,14 +14,14 @@ object SmartphoneService {
         }
     }
 
-    fun <T> filterByPrice(collection: Sequence<Smartphone>, opr: (T) -> Boolean): List<String> =
-        collection.filter { opr(it.price as T) }.map { it.name }.take(3).toList()
+    fun filterByPrice(collection: Collection<Smartphone>, opr: (Smartphone) -> Boolean): List<String> =
+        collection.asSequence().filter { opr(it) }.map { it.name }.take(3).toList()
 
     fun translate(
-        collection: Sequence<Smartphone>, opr: (String) -> String,
+        collection: Collection<Smartphone>, opr: (String) -> String,
         conversation: (BigDecimal) -> BigDecimal
     ):
-            List<Smartphone> = collection.map {
+            List<Smartphone> = collection.asSequence().map {
         Smartphone(
             opr(it.name),
             opr(it.model),
@@ -29,7 +29,7 @@ object SmartphoneService {
             conversation(it.price),
             opr(it.OSVersion)
         )
-    }.toList()
+    }.sortedBy { it.price }.toList()
 
 
 

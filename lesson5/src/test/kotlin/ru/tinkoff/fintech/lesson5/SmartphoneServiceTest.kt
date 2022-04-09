@@ -42,7 +42,7 @@ class SmartphoneServiceTest {
         BigDecimal(560),
         "Microsoft Windows Phone 8")
 
-    private val smartphones = sequenceOf(iphone, samsungA32, htcWindowsPhone, blackBerryClassic, nokia3310, nokia3210)
+    private val smartphones = listOf(iphone, samsungA32, htcWindowsPhone, blackBerryClassic, nokia3310, nokia3210)
 
     @Test
     fun `test grouping smartphone function` () {
@@ -62,7 +62,7 @@ class SmartphoneServiceTest {
 
     @Test
     fun `test filter price function` () {
-        val filteredSmartphones = SmartphoneService.filterByPrice(smartphones) { b: Int -> b > 100 }
+        val filteredSmartphones = SmartphoneService.filterByPrice(smartphones) { b: Smartphone -> b.price > BigDecimal(100) }
         val smartphonesList = listOf(iphone, samsungA32, htcWindowsPhone)
 
         var i = 0
@@ -92,7 +92,7 @@ class SmartphoneServiceTest {
 
         val filteredSmartphones = SmartphoneService.translate(smartphones, translate2Esp, USD2EUR)
 
-        assertEquals(BigDecimal.valueOf(910).setScale(2), filteredSmartphones.first().price)
+        assertEquals(BigDecimal.valueOf(91).setScale(2), filteredSmartphones.first().price)
     }
 
     @Test
@@ -105,7 +105,7 @@ class SmartphoneServiceTest {
                 "bar" -> "bar"
                 "candy bar" -> "barra de caramelo"
                 else -> {
-                    "some Espanol "
+                    "some Espanol"
                 }
             }
         }
@@ -115,7 +115,7 @@ class SmartphoneServiceTest {
 
         val filteredSmartphones = SmartphoneService.translate(smartphones, translate2Esp, USD2EUR)
 
-        assertEquals("Manzana", filteredSmartphones.first().name)
+        assertEquals("some Espanol", filteredSmartphones.first().name)
     }
 
 }
