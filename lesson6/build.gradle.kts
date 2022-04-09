@@ -7,6 +7,7 @@ plugins {
 	kotlin("plugin.spring") version "1.6.10"
 }
 
+
 group = "ru.tinkoff.fintech"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
@@ -23,6 +24,12 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
 	implementation("org.springdoc:springdoc-openapi-ui:1.6.6")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-jdbc")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework:spring-test:5.3.17")
+	implementation("com.h2database:h2:2.1.210")
+	implementation("org.projectlombok:lombok:1.18.20")
+	implementation("org.projectlombok:lombok:1.18.20")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 
 	implementation("org.junit.jupiter:junit-jupiter:5.8.2")

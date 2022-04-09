@@ -1,37 +1,38 @@
 package ru.tinkoff.fintech.lesson6.student.service
 
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.client.*
+import ru.tinkoff.fintech.lesson6.repository.StudentRepository
 import ru.tinkoff.fintech.lesson6.student.model.FullName
-import ru.tinkoff.fintech.lesson6.student.model.Student
 import ru.tinkoff.fintech.lesson6.student.model.StudentInfo
 
 @Service
 class StudentClient(
-    private val restTemplate: RestTemplate,
-    @Value("\${student.information}") private val studentInformation: String
+    @Value("\${student.information}") private val studentInformation: String,
+    private val studentRepository: StudentRepository
 ) {
-    fun getStudents(): Set<StudentInfo> {
-        return restTemplate.exchange<Set<StudentInfo>>("$studentInformation$GET_STUDENTS", HttpMethod.GET).body.orEmpty()
+    fun getStudents(): ResponseEntity<MutableList<StudentInfo?>> {
+        val gadgets = studentRepository.findAll()
+        if (gadgets.isEmpty()) {
+            return ResponseEntity(HttpStatus.NO_CONTENT)
+        }
+        return ResponseEntity(gadgets, HttpStatus.OK)
     }
 
-    fun getStudent(studentId: Int): StudentInfo? = try {
-        restTemplate.getForObject("$studentInformation$GET_STUDENT_BY_ID", studentId)
-    } catch (e: HttpClientErrorException.NotFound) {
-        null
-    }
-
-    fun newStudent(student: FullName): StudentInfo =
-        restTemplate.postForObject("$studentInformation$ADD_STUDENT", student)
-
-    fun search4StudentId(firstName: String, secondName: String, degree: String): Set<StudentInfo> =
-        restTemplate.postForObject("$studentInformation$SEARCH_STUDENT", firstName, secondName, degree)
+//    fun getStudent(studentId: Int): StudentInfo? = try {
+//        restTemplate.getForObject("$studentInformation$GET_STUDENT_BY_ID", studentId)
+//    } catch (e: HttpClientErrorException.NotFound) {
+//        null
+//    }
+//
+//    fun newStudent(student: FullName): StudentInfo =
+//        restTemplate.postForObject("$studentInformation$ADD_STUDENT", student)
+//
+//    fun search4StudentId(firstName: String, secondName: String, degree: String): Set<StudentInfo> =
+//        restTemplate.postForObject("$studentInformation$SEARCH_STUDENT", firstName, secondName, degree)
 }
 
 private const val GET_STUDENTS = "/students"
