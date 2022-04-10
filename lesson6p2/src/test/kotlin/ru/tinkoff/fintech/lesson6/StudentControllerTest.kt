@@ -1,15 +1,14 @@
 package ru.tinkoff.fintech.lesson6
 
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertIterableEquals
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.test.util.AssertionErrors.assertEquals
-import org.springframework.util.Assert
 import ru.tinkoff.fintech.lesson6.repository.StudentRepository
+import ru.tinkoff.fintech.lesson6.student.model.FullName
 import ru.tinkoff.fintech.lesson6.student.model.StudentInfo
+import java.util.*
 import javax.sql.DataSource
 
 
@@ -18,13 +17,13 @@ import javax.sql.DataSource
 //private val mockMvc: MockMvc,
 @DataJpaTest
 //@Sql(scripts = ["/data.sql"])
-class StudentControllerTest   {
+class StudentControllerTest {
 
-	@Autowired
-	private lateinit var ds : DataSource
+    @Autowired
+    private lateinit var ds: DataSource
 
-	@Autowired
-	private val studentRepository: StudentRepository? = null
+    @Autowired
+    private val studentRepository: StudentRepository? = null
 
 //INSERT INTO STUDENT_INFO VALUES(0, 'Good', 'bachelor', 'Ivan', 'Ivanov',  'B', 4.5);
 //INSERT INTO STUDENT_INFO VALUES(1,'Not Good','master','Petr', 'Petrov','E',3.5);
@@ -63,89 +62,88 @@ class StudentControllerTest   {
 //		clearAllMocks()
 //	}
 
-	@Test
-	fun `get list of students`() {
-		val students = studentRepository?.findAll()
-		students?.get(0)?.let { println(it.id) }
+    @Test
+    fun `get list of students`() {
+        val students = studentRepository?.findAll()
+        students?.get(0)?.let { println(it.id) }
 
-		assertEquals(listOfStudents, students)
-	}
+        assertEquals(listOfStudents, students)
+    }
 
-	fun<T> isEqual(first: List<T>, second: List<T>): Boolean {
+    @Test
+    fun `get one student`() {
+        val student: Optional<StudentInfo?>? = studentRepository?.findById(1)
+        println(student)
+        if (student != null) {
+            Assertions.assertEquals(
+                StudentInfo(
+                    1,
+                    "bachelor",
+                    "Ivan", "Ivanov",
+                    4.5F,
+                    "B",
+                    "Good"
+                ), student.get()
+            )
+        }
+    }
 
-		if (first.size != second.size) {
-			return false
-		}
+    @Test
+    fun `add new student`() {
+        val newStudent = StudentInfo(
+            5,
+            "master",
+            "Tim", "Timov",
+            4.2F,
+            "B",
+            "Good"
+        )
 
-		first.forEachIndexed { index, value -> if (second[index] != value) { return false} }
-		return true
-	}
+        val addedStudent: StudentInfo? = studentRepository?.save(newStudent)
+        val student: Optional<StudentInfo?>? = studentRepository?.findById(5)
 
-//	@Test
-//	fun `get one student`() {
-//		val student : StudentInfo = getOneStudent(1).readResponse()
-//		println(student)
-//		Assertions.assertEquals(StudentInfo(
-//			1,
-//			"master",
-//			"Petr", "Petrov",
-//			3.5F,
-//			"E",
-//			"Not Good"
-//		), student)
-//	}
-//
-//	@Test
-//	fun `add new student`() {
-//		val newStudent = FullName("Tigran", "Tigranov")
-//
-//		val addedStudent: StudentInfo = addStudent(newStudent).readResponse()
-//		val listOfStudents = findStudent(newStudent.firstName, newStudent.lastName, "unknown").readResponse<Set<StudentInfo>>()
-//
-//		Assertions.assertEquals(setOf(addedStudent), listOfStudents)
-//	}
-//
-//	@Test
-//	fun `find a student with default val`() {
-//		val newStudent = FullName("Igor", "Ivanov")
-//
-//		val listOfStudents = findStudent(newStudent.firstName, newStudent.lastName).readResponse<Set<StudentInfo>>()
-//
-//		Assertions.assertEquals(
-//			setOf(
-//				StudentInfo(
-//					2,
-//					"bachelor",
-//					"Igor", "Ivanov",
-//					5F,
-//					"A",
-//					"Excellent"
-//				)
-//			),
-//			listOfStudents
-//		)
-//	}
+        if (student != null) {
+            Assertions.assertEquals(student.get(), newStudent)
+        }
+    }
 
-//	@Test
-//	fun `find a student`() {
-//		val newStudent = FullName("Petr", "Petrov")
-//
-//		val listOfStudents = findStudent(newStudent.firstName, newStudent.lastName, "master").readResponse<Set<StudentInfo>>()
-//
-//		Assertions.assertEquals(
-//			setOf(
-//				StudentInfo(
-//					1,
-//					"master",
-//					"Petr", "Petrov",
-//					3.5F,
-//					"E",
-//					"Not Good"
-//				)
-//			),
-//			listOfStudents
-//		)
-//	}
+    @Test
+    fun `find a student with default val`() {
+        val newStudent = FullName("Igor", "Ivanov")
+
+        val student = studentRepository?.findByNameAndDegree(newStudent.firstName, newStudent.lastName)
+
+        assertEquals(
+            StudentInfo(
+                3,
+                "bachelor",
+                "Igor", "Ivanov",
+                5F,
+                "A",
+                "Excellent"
+            ),
+            student
+        )
+    }
+
+    @Test
+    fun `find a student`() {
+        val newStudent = FullName("Petr", "Petrov")
+
+        val students = studentRepository?.findByNameAndDegree(newStudent.firstName, newStudent.lastName, "master")
+
+        Assertions.assertEquals(
+            StudentInfo(
+                2,
+                "master",
+                "Petr", "Petrov",
+                3.5F,
+                "E",
+                "Not Good"
+            ),
+            students
+        )
+    }
 
 //	@Test
 //	fun `find a students`() {
@@ -202,39 +200,39 @@ class StudentControllerTest   {
 //			params.forEach { (key, value) -> if (value != null) add(key, value.toString()) }
 //		}
 
-	private val listOfStudents = mutableListOf(
-		StudentInfo(
-			1,
-			"bachelor",
-			"Ivan", "Ivanov",
-			4.5F,
-			"B",
-			"Good"
-		),
-		StudentInfo(
-			2,
-			"master",
-			"Petr", "Petrov",
-			3.5F,
-			"E",
-			"Not Good"
-		),
-		StudentInfo(
-			3,
-			"bachelor",
-			"Igor", "Ivanov",
-			5F,
-			"A",
-			"Excellent"
-		),
-		StudentInfo(
-			4,
-			"master",
-			"Igor", "Ivanov",
-			4.6F,
-			"B",
-			"Good"
-		)
-	)
+    private val listOfStudents = mutableListOf(
+        StudentInfo(
+            1,
+            "bachelor",
+            "Ivan", "Ivanov",
+            4.5F,
+            "B",
+            "Good"
+        ),
+        StudentInfo(
+            2,
+            "master",
+            "Petr", "Petrov",
+            3.5F,
+            "E",
+            "Not Good"
+        ),
+        StudentInfo(
+            3,
+            "bachelor",
+            "Igor", "Ivanov",
+            5F,
+            "A",
+            "Excellent"
+        ),
+        StudentInfo(
+            4,
+            "master",
+            "Igor", "Ivanov",
+            4.6F,
+            "B",
+            "Good"
+        )
+    )
 
 }
