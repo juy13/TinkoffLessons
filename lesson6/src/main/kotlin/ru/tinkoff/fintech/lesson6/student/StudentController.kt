@@ -1,7 +1,6 @@
 package ru.tinkoff.fintech.lesson6.student
 
 import org.springframework.web.bind.annotation.*
-import ru.tinkoff.fintech.lesson6.student.model.FullName
 import ru.tinkoff.fintech.lesson6.student.model.StudentInfo
 import ru.tinkoff.fintech.lesson6.student.service.StudentService
 
@@ -11,24 +10,21 @@ import ru.tinkoff.fintech.lesson6.student.service.StudentService
 class StudentController(private val studentService: StudentService) {
 
     @GetMapping("/students")
-    fun getStudentList(): Set<StudentInfo> =
+    fun getStudentList(): List<StudentInfo> =
         studentService.getStudents()
 
     @GetMapping("/student/{studentId}")
-    fun getStudent(@PathVariable studentId: Int): StudentInfo? =
+    fun getStudent(@PathVariable studentId: Int): StudentInfo =
         studentService.getStudent(studentId)
 
-
     @PostMapping("/add")
-    fun addStudent(@RequestBody fullName: FullName): StudentInfo =
-        studentService.newStudent(fullName)
+    fun addStudent(@RequestBody studentInfo: StudentInfo): StudentInfo =
+        studentService.newStudent(studentInfo)
 
     @GetMapping("/search")
-    fun search4StudentId(
-        @RequestParam firstName: String,
-        @RequestParam lastName: String,
+    fun search4Students(
         @RequestParam(defaultValue = "bachelor") degree: String
-    ): Set<StudentInfo> = studentService.search4StudentId(firstName, lastName, degree)
+    ): List<StudentInfo> = studentService.search4Students(degree)
 
 
 }

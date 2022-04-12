@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.client.*
-import ru.tinkoff.fintech.lesson6.student.model.FullName
-import ru.tinkoff.fintech.lesson6.student.model.Student
 import ru.tinkoff.fintech.lesson6.student.model.StudentInfo
 
 @Service
@@ -17,21 +15,26 @@ class StudentClient(
     private val restTemplate: RestTemplate,
     @Value("\${student.information}") private val studentInformation: String
 ) {
-    fun getStudents(): Set<StudentInfo> {
-        return restTemplate.exchange<Set<StudentInfo>>("$studentInformation$GET_STUDENTS", HttpMethod.GET).body.orEmpty()
+    fun getStudents(): List<StudentInfo> {
+        return restTemplate.exchange<Set<StudentInfo>>("$studentInformation$GET_STUDENTS", HttpMethod.GET).body.orEmpty().toList()
     }
 
-    fun getStudent(studentId: Int): StudentInfo? = try {
+    fun getStudent(studentId: Int): StudentInfo = try {
         restTemplate.getForObject("$studentInformation$GET_STUDENT_BY_ID", studentId)
     } catch (e: HttpClientErrorException.NotFound) {
-        null
+        StudentInfo(-1,
+            "unknown",
+            "unknown",
+            "unknown",
+            -1F, "unknown",
+            "unknown")
     }
 
-    fun newStudent(student: FullName): StudentInfo =
+    fun newStudent(student: StudentInfo): StudentInfo =
         restTemplate.postForObject("$studentInformation$ADD_STUDENT", student)
 
-    fun search4StudentId(firstName: String, secondName: String, degree: String): Set<StudentInfo> =
-        restTemplate.postForObject("$studentInformation$SEARCH_STUDENT", firstName, secondName, degree)
+    fun search4Students(degree: String): List<StudentInfo> =
+        restTemplate.postForObject("$studentInformation$SEARCH_STUDENT", degree)
 }
 
 private const val GET_STUDENTS = "/students"
