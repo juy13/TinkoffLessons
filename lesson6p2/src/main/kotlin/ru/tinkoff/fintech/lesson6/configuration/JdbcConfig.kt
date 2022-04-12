@@ -9,8 +9,8 @@ import javax.sql.DataSource
 
 @Configuration
 @EnableJpaRepositories(basePackages = ["ru.tinkoff.fintech.lesson6"])
-class JbcConfiguration {
+class JdbcConfig {
 
     @Bean
-    fun jbcTemplate(dataSource : DataSource) : JdbcTemplate = JdbcTemplate(dataSource)
+    fun jdbcTemplate(dataSource : DataSource) = JdbcTemplate(dataSource)
 }

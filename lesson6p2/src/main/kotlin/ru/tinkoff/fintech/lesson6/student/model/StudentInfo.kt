@@ -1,9 +1,8 @@
 package ru.tinkoff.fintech.lesson6.student.model
 
 
-import lombok.NoArgsConstructor
+
 import javax.persistence.*
-import kotlin.properties.Delegates
 
 @Entity
 @Table(name = "StudentInfo")
@@ -48,3 +47,4 @@ class StudentInfo() {
         return false
     }
 }
+
