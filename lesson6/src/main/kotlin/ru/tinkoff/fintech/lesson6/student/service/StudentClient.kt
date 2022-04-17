@@ -3,11 +3,9 @@ package ru.tinkoff.fintech.lesson6.student.service
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.client.*
+import ru.tinkoff.fintech.lesson6.configuration.StudentNotFoundException
 import ru.tinkoff.fintech.lesson6.student.model.StudentInfo
 
 @Service
@@ -19,25 +17,23 @@ class StudentClient(
         return restTemplate.exchange<Set<StudentInfo>>("$studentInformation$GET_STUDENTS", HttpMethod.GET).body.orEmpty().toList()
     }
 
-    fun getStudent(studentId: Int): StudentInfo = try {
-        restTemplate.getForObject("$studentInformation$GET_STUDENT_BY_ID", studentId)
-    } catch (e: HttpClientErrorException.NotFound) {
-        StudentInfo(-1,
-            "unknown",
-            "unknown",
-            "unknown",
-            -1F, "unknown",
-            "unknown")
+
+    @ExceptionHandler(StudentNotFoundException::class)
+    fun getStudent(studentId: Int): StudentInfo {
+        return restTemplate.getForObject("$studentInformation$GET_STUDENT_BY_ID", studentId)
     }
+
 
     fun newStudent(student: StudentInfo): StudentInfo =
         restTemplate.postForObject("$studentInformation$ADD_STUDENT", student)
 
-    fun search4Students(degree: String): List<StudentInfo> =
-        restTemplate.postForObject("$studentInformation$SEARCH_STUDENT", degree)
+    @ExceptionHandler(StudentNotFoundException::class)
+    fun search4Students(degree: String): List<StudentInfo> {
+        return restTemplate.postForObject("$studentInformation$SEARCH_STUDENT", degree)
+    }
 }
 
-private const val GET_STUDENTS = "/students"
-private const val GET_STUDENT_BY_ID = "/student/{studentId}"
-private const val ADD_STUDENT = "/add"
-private const val SEARCH_STUDENT = "/search"
+private const val GET_STUDENTS = "/university/students"
+private const val GET_STUDENT_BY_ID = "/university/student/{studentId}"
+private const val ADD_STUDENT = "/university/add"
+private const val SEARCH_STUDENT = "/university/search"
