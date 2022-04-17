@@ -1,10 +1,19 @@
-import ru.tinkoff.fintech.lesson8.ThreadPool
+package ru.tinkoff.fintech.lesson8
 
-fun main(args: Array<String>) {
-    println("Hello World!")
+import java.lang.Thread.sleep
 
-    // Try adding program arguments via Run/Debug configuration.
-    // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
-    val threadPool = ThreadPool(3)
+
+fun main() {
+
+    val customThreadPool = ThreadPool(4)
+
+    for (i in 1..40) {
+        val task = Task("Task $i")
+//        sleep(30)
+        println("Created : " + task.getName())
+        customThreadPool.execute(task)
+    }
+//    sleep(500)
+
+    customThreadPool.shutdown()
 }

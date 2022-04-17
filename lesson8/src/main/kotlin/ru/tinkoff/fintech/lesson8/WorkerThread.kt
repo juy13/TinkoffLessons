@@ -1,8 +1,43 @@
 package ru.tinkoff.fintech.lesson8
 
-class WorkerThread : Thread() {
-    
+import java.util.concurrent.LinkedBlockingQueue
+
+class WorkerThread(private val queue: LinkedBlockingQueue<Runnable>) : Thread() {
+
+    var workUntilAlive = true
+
     override fun run() {
-        println("This code is running in a thread")
+        var task: Runnable?
+
+        while (workUntilAlive) {
+            synchronized(queue as Object) {
+                while (queue.isEmpty()) {
+                    try {
+                        queue.wait()
+                    } catch (e: InterruptedException) {
+                        println("An error occurred while queue is waiting: " + e.message)
+                    }
+                    if(!workUntilAlive)
+                        break
+                }
+                task = queue.poll()
+            }
+            try {
+                if (task != null)
+                    (task as Runnable).run()
+            } catch (e: RuntimeException) {
+                println("Thread pool is interrupted due to an issue: " + e.message)
+            }
+        }
+
+        while (queue.isNotEmpty()) {
+            try {
+                task = queue.poll() as Runnable
+                task!!.run()
+            } catch (e: RuntimeException) {
+                println("Thread pool is interrupted due to an issue: " + e.message)
+            }
+        }
+        println("Stop thread ${currentThread().name}")
     }
 }
