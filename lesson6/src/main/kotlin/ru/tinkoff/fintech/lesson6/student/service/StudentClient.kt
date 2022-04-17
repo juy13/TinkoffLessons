@@ -28,8 +28,8 @@ class StudentClient(
         restTemplate.postForObject("$studentInformation$ADD_STUDENT", student)
 
     @ExceptionHandler(StudentNotFoundException::class)
-    fun search4Students(degree: String): List<StudentInfo> {
-        return restTemplate.postForObject("$studentInformation$SEARCH_STUDENT", degree)
+    fun search4Students(degree: String, pageNo : Int, pageSize: Int): List<StudentInfo> {
+        return restTemplate.postForObject("$studentInformation$SEARCH_STUDENT", degree, pageNo, pageSize)
     }
 }
 

@@ -50,8 +50,19 @@ class StudentControllerTest @Autowired constructor(private val mockMvc: MockMvc,
 			listOfStudents.add(firstArg())
 			firstArg()
 		}
-		every { studentClient.search4Students(any())} answers {
-			listOfStudents.filter { (it.degree == firstArg())}
+		every { studentClient.search4Students(any(), any(), any())} answers {
+			val pageNo = secondArg<Int>()
+			val pageSize = thirdArg<Int>()
+			listOfStudents.filter { (it.degree == firstArg())}.let {
+				val n = pageNo - 1
+				val st = n * pageSize
+				if(st > it.size) {
+					it.subList(st, st + (it.size - st))
+				}
+				else {
+					it.subList(st, st + pageSize)
+				}
+			}
 		}
 	}
 
@@ -122,10 +133,32 @@ class StudentControllerTest @Autowired constructor(private val mockMvc: MockMvc,
 		)
 	}
 
-	private fun findStudent(degree: String? = null): ResultActions =
+	@Test
+	fun `find a student with paging`() {
+
+		val pageNo = 2
+		val pageSize = 1
+		val listOfStudents = findStudent("master", 2, 1).readResponse<List<StudentInfo>>()
+
+		Assertions.assertEquals(
+			masterStudents.let {
+				val n = 2 - 1
+				val st = n * 1
+				if(st > it.size) {
+					it.subList(st, st + (it.size - st))
+				}
+				else {
+					it.subList(st, st + 1)
+				}
+			},
+			listOfStudents
+		)
+	}
+
+	private fun findStudent(degree: String? = null, pageNo : Int? = null, pageSize : Int? = null): ResultActions =
 		mockMvc.perform(
 			get("/university/search")
-				.params(createParams( "degree" to degree))
+				.params(createParams( "degree" to degree, "pageNo" to pageNo, "pageSize" to pageSize))
 		)
 
 	private fun addStudent(newStudent: StudentInfo): ResultActions =
@@ -230,6 +263,54 @@ class StudentControllerTest @Autowired constructor(private val mockMvc: MockMvc,
 			5F,
 			"A",
 			"Excellent"
+		)
+	)
+
+	private val listOfStudents2 = mutableListOf(
+		StudentInfo(
+			0,
+			"bachelor",
+			"Ivan",
+			"Ivanov",
+			4.5F,
+			"B",
+			"Good"
+		),
+		StudentInfo(
+			1,
+			"master",
+			"Petr",
+			"Petrov",
+			3.5F,
+			"E",
+			"Not Good"
+		),
+		StudentInfo(
+			2,
+			"bachelor",
+			"Igor",
+			"Ivanov",
+			5F,
+			"A",
+			"Excellent"
+		),
+		StudentInfo(
+			3,
+			"master",
+			"Igor",
+			"Ivanov",
+			4.6F,
+			"B",
+			"Good"
+		),
+		StudentInfo(
+			4,
+			"bachelor",
+			"Igor",
+			"Ivanovich",
+			4.2F,
+			"B",
+			"Good"
 		)
 	)
 

@@ -23,8 +23,10 @@ class StudentController(private val studentService: StudentService) {
 
     @GetMapping("/search")
     fun search4Students(
-        @RequestParam(defaultValue = "bachelor") degree: String
-    ): List<StudentInfo> = studentService.search4Students(degree)
+        @RequestParam(defaultValue = "bachelor") degree: String,
+        @RequestParam(defaultValue = "1") pageNo : Int,
+        @RequestParam(defaultValue = "2") pageSize : Int
+    ): List<StudentInfo> = studentService.search4Students(degree, pageNo, pageSize)
 
 
 }

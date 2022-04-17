@@ -20,9 +20,9 @@ class StudentService (private val studentClient: StudentClient) {
         return studentClient.newStudent(studentInfo)
     }
 
-    fun search4Students(degree: String): List<StudentInfo> {
-        require(degree.isNotEmpty())
-        return studentClient.search4Students(degree)
+    fun search4Students(degree: String, pageNo : Int, pageSize : Int): List<StudentInfo> {
+        require(degree.isNotEmpty() && pageNo >= 0 && pageSize >= 0 )
+        return studentClient.search4Students(degree, pageNo, pageSize)
     }
 
 }
