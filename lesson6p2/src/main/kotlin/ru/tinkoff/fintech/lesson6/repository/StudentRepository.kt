@@ -10,7 +10,7 @@ interface StudentRepository {
 
     fun getStudent(studentId: Int): StudentInfo
 
-    fun newStudent(studentInfo: StudentInfo) : StudentInfo
+    fun newStudent(studentInfo: StudentInfo)
 
     fun search4Students(degree : String = "bachelor") : List<StudentInfo>
 }

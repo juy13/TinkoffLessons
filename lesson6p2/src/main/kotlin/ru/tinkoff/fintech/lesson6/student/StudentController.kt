@@ -18,7 +18,7 @@ class StudentController(private val studentService: StudentService) {
         studentService.getStudent(studentId)
 
     @PostMapping("/add")
-    fun addStudent(@RequestBody studentInfo: StudentInfo): StudentInfo =
+    fun addStudent(@RequestBody studentInfo: StudentInfo) =
         studentService.newStudent(studentInfo)
 
     @GetMapping("/search")

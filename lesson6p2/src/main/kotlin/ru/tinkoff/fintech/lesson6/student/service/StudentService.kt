@@ -16,10 +16,8 @@ class StudentService (private val studentRepository: StudentRepository) {
         return studentRepository.getStudent(studentId)
     }
 
-    fun newStudent(studentInfo: StudentInfo): StudentInfo
-    {
-        return studentRepository.newStudent(studentInfo)
-    }
+    fun newStudent(studentInfo: StudentInfo) =
+        studentRepository.newStudent(studentInfo)
 
     fun search4Students(degree: String): List<StudentInfo> {
         require(degree.isNotEmpty())

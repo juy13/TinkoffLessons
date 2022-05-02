@@ -24,17 +24,8 @@ class JpaStudentRepositoryImpl (private val jpaStudentRepository: JpaStudentRepo
             "unknown")
     }
 
-    override fun newStudent(studentInfo: StudentInfo): StudentInfo {
-        val student = jpaStudentRepository.save(studentInfo)
-        if (ObjectUtils.isEmpty(student)) {
-            return StudentInfo(-1,
-                "unknown",
-                "unknown",
-                "unknown",
-                -1F, "unknown",
-                "unknown")
-        }
-        return student
+    override fun newStudent(studentInfo: StudentInfo) {
+        jpaStudentRepository.save(studentInfo)
     }
 
     override fun search4Students(degree: String): List<StudentInfo> {

@@ -3,30 +3,30 @@ package ru.tinkoff.fintech.lesson6.testRepositories
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import ru.tinkoff.fintech.lesson6.repository.JpaStudentRepo
-import ru.tinkoff.fintech.lesson6.repository.JpaStudentRepositoryImpl
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest
+import org.springframework.jdbc.core.JdbcTemplate
+import ru.tinkoff.fintech.lesson6.repository.JdbcStudentRepositoryImpl
 import ru.tinkoff.fintech.lesson6.student.model.StudentInfo
+import javax.sql.DataSource
 
 
-@DataJpaTest
-class JpaStudentControllerTest {
-
+@JdbcTest
+class JdbcStudentRepositoryTest {
 
     @Autowired
-    private lateinit var studentRepository: JpaStudentRepo
+    private lateinit var ds: DataSource
 
     @Test
     fun `get list of students`() {
-        val students = studentRepository.let { JpaStudentRepositoryImpl(it).getStudents() }
+        val students = JdbcStudentRepositoryImpl(JdbcTemplate(ds)).getStudents()
 
         assertEquals(listOfStudents, students)
     }
 
     @Test
     fun `get one student`() {
-        val student = studentRepository.findById(1)
-        println(student)
+        val student = JdbcStudentRepositoryImpl(JdbcTemplate(ds)).getStudent(1)
+
         assertEquals(
             StudentInfo(
                 1,
@@ -35,13 +35,13 @@ class JpaStudentControllerTest {
                 4.5F,
                 "B",
                 "Good"
-            ), student.get()
+            ), student
         )
     }
 
     @Test
     fun `add new student`() {
-        val newStudent = StudentInfo(
+        val student = StudentInfo(
             5,
             "master",
             "Tim", "Timov",
@@ -50,23 +50,23 @@ class JpaStudentControllerTest {
             "Good"
         )
 
-        val addedStudent  = studentRepository.save(newStudent)
-        val student = studentRepository.findById(5)
+        JdbcStudentRepositoryImpl(JdbcTemplate(ds)).newStudent(student)
+        val addedStudent = JdbcStudentRepositoryImpl(JdbcTemplate(ds)).getStudent(5)
 
-        assertEquals(student.get(), newStudent)
+        assertEquals(student, addedStudent)
     }
 
 
     @Test
     fun `find students with default val`() {
-        val students = studentRepository.search4Students()
+        val students = JdbcStudentRepositoryImpl(JdbcTemplate(ds)).search4Students()
 
         assertEquals(bachelorStudents, students)
     }
 
     @Test
     fun `find students`() {
-        val students = studentRepository.search4Students("master")
+        val students = JdbcStudentRepositoryImpl(JdbcTemplate(ds)).search4Students("master")
 
         assertEquals(masterStudents, students)
     }
