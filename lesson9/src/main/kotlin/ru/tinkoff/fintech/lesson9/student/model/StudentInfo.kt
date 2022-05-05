@@ -1,4 +1,4 @@
-package ru.tinkoff.fintech.lesson6.student.model
+package ru.tinkoff.fintech.lesson9.student.model
 
 import lombok.NoArgsConstructor
 import javax.persistence.*
@@ -8,7 +8,7 @@ import javax.persistence.*
 @Table(name = "StudentInfo")
 data class StudentInfo(
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int = 0,
     val logging : String = "unknown"
 )

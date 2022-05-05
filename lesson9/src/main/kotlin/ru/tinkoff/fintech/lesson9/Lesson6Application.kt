@@ -1,4 +1,4 @@
-package ru.tinkoff.fintech.lesson6
+package ru.tinkoff.fintech.lesson9
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
