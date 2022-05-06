@@ -1,8 +1,12 @@
 package ru.tinkoff.fintech.lesson9.testRepositories
 
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.every
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -12,6 +16,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import org.springframework.transaction.annotation.Transactional
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import ru.tinkoff.fintech.lesson9.configuration.JpaStudentRepo
 import ru.tinkoff.fintech.lesson9.repository.JpaStudentRepositoryImpl
@@ -30,14 +35,14 @@ class CoroutinesTest {
 
     @Autowired
     lateinit var controller: StudentController
-//    private lateinit var jpaStudentRepo: JpaStudentRepo
+
+//    @MockkBean
+//    private lateinit var studentRepository: StudentRepository
 
     lateinit var client: WebTestClient
 
     @BeforeEach
     fun setUp() {
-//        val studentRepository = JpaStudentRepositoryImpl(jpaStudentRepo)
-//        val studentService = StudentService(studentRepository)
         client = WebTestClient.bindToController(controller)
             .configureClient()
             .baseUrl("/university")
@@ -45,47 +50,45 @@ class CoroutinesTest {
     }
 
 
-
     @Test
+    @ExperimentalCoroutinesApi
     fun `get one student`() {
+
         val result = client.get().uri("/get-student/1")
-            .exchange()
-            .expectStatus().isOk
-            .expectBody<StudentInfo>().isEqualTo(StudentInfo(1, "Kimineuc"))
-
-
-
-//        assertEquals(result.responseBody, StudentInfo(
-//            0, "unknown"
-//        ))
-    }
-
-    @Test
-    fun `post one student`() {
-        val result = client.post().uri("/add-new-student")
-            .bodyValue(StudentInfo(6, "master"))
-            .exchange()
-            .expectBody<String>()
-            .returnResult()
-
-        assertEquals(result.responseBody, "Got data")
-    }
-
-    @Test
-    fun `post and get one student`() {
-        val result = client.post().uri("/add-new-student")
-            .bodyValue(StudentInfo(1, "master"))
-            .exchange()
-
-        sleep(2000)
-        val result2 = client.get().uri("/get-student/1")
             .exchange()
             .expectStatus().isOk
             .expectBody<StudentInfo>()
             .returnResult()
-
-        assertEquals(result2.responseBody, StudentInfo(1, "master"))
+        sleep(1000)
+        assertEquals(result.responseBody, StudentInfo(1, "wat"))
     }
+
+//    @Test
+//    fun `post one student`() {
+//        val result = client.post().uri("/add-new-student")
+//            .bodyValue(StudentInfo(6, "master"))
+//            .exchange()
+//            .expectBody<String>()
+//            .returnResult()
+//
+//        assertEquals(result.responseBody, "Got data")
+//    }
+//
+//    @Test
+//    fun `post and get one student`() {
+//        val result = client.post().uri("/add-new-student")
+//            .bodyValue(StudentInfo(1, "master"))
+//            .exchange()
+//
+//        sleep(2000)
+//        val result2 = client.get().uri("/get-student/1")
+//            .exchange()
+//            .expectStatus().isOk
+//            .expectBody<StudentInfo>()
+//            .returnResult()
+//
+//        assertEquals(result2.responseBody, StudentInfo(1, "master"))
+//    }
 //
 //    @Test
 //    fun `add new student`() {
