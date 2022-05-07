@@ -2,10 +2,9 @@ package ru.tinkoff.fintech.tests
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import ru.tinkoff.fintech.lesson8.Task
 import ru.tinkoff.fintech.lesson8.ThreadPool
+import java.lang.Thread.sleep
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.Executors
 
 
 class ThreadTest {
@@ -46,5 +45,23 @@ class ThreadTest {
         }
 
         assertEquals(0, counter)
+    }
+
+    @Test
+    fun `test counter before shutdown service`() {
+        val service = ThreadPool(4)
+        var counter = 0
+        val latch = CountDownLatch(40)
+        for (i in 1..40) {
+            service.execute {
+                counter += 1
+                latch.countDown()
+                sleep(100)
+            }
+        }
+
+        service.shutdown()
+        latch.await()
+        assertEquals(40, counter)
     }
 }

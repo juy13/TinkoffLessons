@@ -1,12 +1,11 @@
 package ru.tinkoff.fintech.lesson8
 
-import java.util.Objects
 import java.util.concurrent.Executor
 import java.util.concurrent.LinkedBlockingQueue
 
 class ThreadPool(private val poolSize: Int = 5) : Executor {
 
-    private lateinit var workers: Array<WorkerThread?>
+    private var workers: Array<WorkerThread?>
     private val queue: LinkedBlockingQueue<Runnable> = LinkedBlockingQueue()
     private var pSize :  Int = 0
 
