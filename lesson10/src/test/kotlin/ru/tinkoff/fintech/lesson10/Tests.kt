@@ -1,4 +1,4 @@
-package ru.tinkoff.fintech.lesson6
+package ru.tinkoff.fintech.lesson10
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest

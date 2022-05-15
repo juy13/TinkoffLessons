@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet id="create" author="jzethar">
+        <sql>
+            create table IF NOT EXISTS events (
+            id IDENTITY NOT NULL PRIMARY KEY,
+            type varchar(255) check (type in ('SMS', 'EMAIL', 'PUSH', 'NO')),
+            body varchar NOT NULL,
+            status varchar(255) check (status in ('NEW', 'IN_PROCESS', 'DONE', 'ERROR'))
+            )
+        </sql>
+    </changeSet>
+</databaseChangeLog>

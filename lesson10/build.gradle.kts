@@ -30,9 +30,11 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-activemq")
     implementation("org.apache.activemq:activemq-broker")
+    implementation("com.google.code.gson:gson")
     runtimeOnly("com.h2database:h2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.awaitility:awaitility:4.2.0")
 }
 
 tasks.withType<KotlinCompile> {
