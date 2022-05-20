@@ -8,12 +8,14 @@ spring:
     driverClassName: org.h2.Driver
   jpa:
     show-sql: true
-    open-in-view=true: false
+    open-in-view: false
   liquibase:
     change-log: changelog/db.changelog-master.xml
     enabled: true
 server.port: 9000
 
-student.information: http://localhost:9001
+events.information: http://localhost:9001
 jms.broker.url: tcp://localhost:61616
 jms.queue.name: IN_QUEUE
+
+activemq.broker-url: vm://embedded?broker.persistent=false,useShutdownHook=falsein-memory

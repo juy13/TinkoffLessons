@@ -1,64 +1,68 @@
-//package ru.tinkoff.fintech.lesson10.testRepositories
-//
-//import com.google.gson.Gson
-//import org.awaitility.Awaitility.await
-//import org.awaitility.Durations
-//import org.junit.jupiter.api.BeforeEach
-//import org.junit.jupiter.api.Test
-//import org.mockito.Mockito.*
-//import org.springframework.beans.factory.annotation.Autowired
-//import org.springframework.boot.autoconfigure.EnableAutoConfiguration
-//import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-//import org.springframework.boot.test.mock.mockito.SpyBean
-//import org.springframework.context.annotation.PropertySource
-//import org.springframework.jms.core.JmsTemplate
-//import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
-//import org.springframework.test.context.junit4.SpringRunner
-//import ru.tinkoff.fintech.lesson10.configuration.JmsConfig
-//import ru.tinkoff.fintech.lesson10.configuration.JpaEventRepo
-//import ru.tinkoff.fintech.lesson10.repository.EventRepository
-//import ru.tinkoff.fintech.lesson10.repository.JpaEventRepositoryImpl
-//import ru.tinkoff.fintech.lesson10.student.ProducerService
-//import ru.tinkoff.fintech.lesson10.student.model.Events
-//import ru.tinkoff.fintech.lesson10.student.model.Status
-//import ru.tinkoff.fintech.lesson10.student.model.Types
-//
-//
-//@SpringJUnitConfig(JmsConfig::class)
-//@DataJpaTest
-//@EnableAutoConfiguration
-//class ScheduledAwaitilityIntegrationTest {
-//
-//    @Autowired
-//    private lateinit var eventRepo: JpaEventRepo
-////
-////    private val jpaEventRepositoryImpl = JpaEventRepositoryImpl(eventRepo)
-////    private val producerService = ProducerService(jpaEventRepositoryImpl)
-//
-////    @Autowired
-////    private lateinit var counter: ProducerService
-//
-//    @Autowired
-//    private val jmsTemplate: JmsTemplate? = null
-//
-////    @BeforeEach
-////    fun init() {
-////        counter = ProducerService()
-////    }
-//
+package ru.tinkoff.fintech.lesson10.testRepositories
+
+import org.awaitility.Awaitility.await
+import org.awaitility.kotlin.matches
+import org.awaitility.kotlin.untilCallTo
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.springframework.boot.test.context.SpringBootTest
+import ru.tinkoff.fintech.lesson10.student.ProducerService
+import org.springframework.beans.factory.annotation.Autowired
+import ru.tinkoff.fintech.lesson10.interfaces.JpaEventRepo
+import ru.tinkoff.fintech.lesson10.student.model.Status
+import java.lang.Thread.sleep
+
+
+
+@SpringBootTest
+class ScheduledAwaitilityIntegrationTest {
+
+
+    @Autowired
+    private lateinit var producer: ProducerService
+
+    @Autowired
+    private lateinit var jpaEventRepo: JpaEventRepo
+
+//    @MockkBean
+//    private lateinit var smsService: SMSService
+//    @MockkBean
+//    private lateinit var emailService: EmailService
+//    @MockkBean
+//    private lateinit var pushService: PushService
+
+    @Test
+    fun `test update status to DONE`() {
+
+        producer.produce()
+
+        await() untilCallTo {
+            jpaEventRepo.findAll()
+        } matches {
+            it!!.all { event -> event.status == Status.DONE }
+        }
+        sleep(1000)
+        val result = jpaEventRepo.findAll()
+
+        result.forEach{
+            assertEquals(Status.DONE, it.status)
+        }
+    }
+
 //    @Test
-//    fun whenWaitOneSecond_thenScheduledIsCalledAtLeastTenTimes() {
-//        val event = Events(1, Types.SMS, "qwerty", Status.NEW)
-//        sendMessageToDestination(event)
+//    fun `test update status to IN_Progress`() {
+//
+//        producer.produce()
+//        //producer.sendMessageToDestination(Event(5, Types.SMS, "qwerty", Status.NEW))
+//
+//        await() untilCallTo {
+//            jpaEventRepo.findAll()
+//        } matches {
+//            it!!.all { event -> event.status == Status.DONE }
+//        }
+//
+//        verify(exactly = 1) {smsService.push(any(), any())}
+//        verify(exactly = 1) {emailService.push(any(), any())}
+//        verify(exactly = 1) {pushService.push(any(), any())}
 //    }
-//
-//    private fun sendMessageToDestination(message: Events) {
-//        val gson = Gson()
-//        val jsonString = gson.toJson(message)
-//        jmsTemplate!!.convertAndSend(jsonString)
-//    }
-//
-//
-//
-//
-//}
+}

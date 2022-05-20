@@ -1,22 +1,23 @@
 package ru.tinkoff.fintech.lesson10.repository
 
 import org.springframework.stereotype.Service
-import ru.tinkoff.fintech.lesson10.configuration.JpaEventRepo
-import ru.tinkoff.fintech.lesson10.student.model.Events
+import ru.tinkoff.fintech.lesson10.interfaces.EventRepository
+import ru.tinkoff.fintech.lesson10.interfaces.JpaEventRepo
+import ru.tinkoff.fintech.lesson10.student.model.Event
 
 
 @Service
 class JpaEventRepositoryImpl(private val jpaStudentRepository: JpaEventRepo) : EventRepository {
 
-    override fun search4NewEvents(): List<Events> {
+    override fun search4NewEvents(): List<Event> {
         val events = jpaStudentRepository.search4NewEvents()
         if (events.isEmpty()) {
-            return listOf(Events())
+            return listOf()
         }
         return events
     }
 
-    override fun getAll(): List<Events> {
+    override fun getAll(): List<Event> {
         return jpaStudentRepository.findAll()
     }
 

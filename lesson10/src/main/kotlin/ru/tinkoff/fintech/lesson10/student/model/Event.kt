@@ -6,7 +6,7 @@ import javax.persistence.*
 @Entity
 @NoArgsConstructor
 @Table(name = "events")
-data class Events(
+data class Event(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Int = 0,

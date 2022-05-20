@@ -19,7 +19,7 @@ import javax.jms.Destination
 @Configuration
 @PropertySource("classpath:application.yaml")
 class JmsConfig {
-    @Value("\${jms.broker.url}")
+    @Value("\${activemq.broker-url}")
     private val brokerUrl: String? = null
 
     @Value("\${jms.queue.name}")
@@ -29,7 +29,6 @@ class JmsConfig {
     private val messageConsumer: Consumer? = null
 
     @Bean
-    @Throws(Exception::class)
     fun broker(): BrokerService {
         val broker = BrokerService()
         broker.addConnector(brokerUrl)

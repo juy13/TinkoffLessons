@@ -6,7 +6,7 @@ import org.springframework.jms.core.JmsTemplate
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import ru.tinkoff.fintech.lesson10.repository.JpaEventRepositoryImpl
-import ru.tinkoff.fintech.lesson10.student.model.Events
+import ru.tinkoff.fintech.lesson10.student.model.Event
 import ru.tinkoff.fintech.lesson10.student.model.Status
 
 
@@ -19,7 +19,7 @@ class ProducerService() {
     @Autowired
     private val jmsTemplate: JmsTemplate? = null
 
-    @Scheduled(cron = "* */60 * * * ?")
+    @Scheduled(cron = "*/5 * * * * ?")
     fun produce() {
         val newEvents = jpaEventRepositoryImpl?.search4NewEvents()
         newEvents?.forEach {
@@ -28,10 +28,9 @@ class ProducerService() {
                 sendMessageToDestination(it)
             }
         }
-        println(newEvents)
     }
 
-    private fun sendMessageToDestination(message: Events) {
+    fun sendMessageToDestination(message: Event) {
         val gson = Gson()
         val jsonString = gson.toJson(message)
         jmsTemplate!!.convertAndSend(jsonString)
