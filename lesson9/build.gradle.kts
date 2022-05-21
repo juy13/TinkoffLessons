@@ -42,6 +42,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.2")
     testImplementation("com.ninja-squad:springmockk:3.1.1")
     testImplementation("io.mockk:mockk:1.12.3")
+    testImplementation("org.awaitility:awaitility-kotlin:4.1.0")
 }
 
 tasks.withType<KotlinCompile> {

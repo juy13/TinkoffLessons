@@ -5,5 +5,4 @@ import ru.tinkoff.fintech.lesson9.student.model.StudentInfo
 
 interface JpaStudentRepo : JpaRepository<StudentInfo, Int> {
 
-
 }

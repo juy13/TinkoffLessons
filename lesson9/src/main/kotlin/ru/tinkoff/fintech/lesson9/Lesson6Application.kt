@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class Lesson6Application
+class Lesson9Application
 
 fun main() {
-	runApplication<Lesson6Application>()
+	runApplication<Lesson9Application>()
 }

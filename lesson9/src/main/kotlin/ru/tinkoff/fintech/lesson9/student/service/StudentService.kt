@@ -10,12 +10,9 @@ class StudentService (private val studentRepository: StudentRepository) {
 
     val scope = CoroutineScope(Dispatchers.Default)
 
-    suspend fun getStudent(studentId: Int): StudentInfo {
+    fun getStudent(studentId: Int): StudentInfo {
         require(studentId >= 0)
-        val student = scope.async {
-            studentRepository.getStudent(studentId)
-        }
-        return student.await()
+        return studentRepository.getStudent(studentId)
     }
 
     fun newStudent(studentInfo: StudentInfo): String
