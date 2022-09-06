@@ -18,14 +18,13 @@ class StudentController(private val studentService: StudentService) {
         studentService.getStudent(studentId)
 
     @PostMapping("/add")
-    fun addStudent(@RequestBody studentInfo: StudentInfo): StudentInfo =
+    fun addStudent(@RequestBody studentInfo: StudentInfo) =
         studentService.newStudent(studentInfo)
 
     @GetMapping("/search")
     fun search4Students(
-        @RequestParam(defaultValue = "bachelor") degree: String,
-        @RequestParam(defaultValue = "1") pageNo : Int,
-        @RequestParam(defaultValue = "2") pageSize : Int
-    ): List<StudentInfo> = studentService.search4Students(degree, pageNo, pageSize)
+        @RequestParam(defaultValue = "bachelor") degree: String
+    ): List<StudentInfo> = studentService.search4Students(degree)
+
 
 }

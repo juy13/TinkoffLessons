@@ -1,5 +1,4 @@
 package ru.tinkoff.fintech.lesson6.student.model
-
 import java.math.BigDecimal
 
 abstract class Student(val firstName: String, val lastName: String, val id : Int, val degree : String) {

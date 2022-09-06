@@ -8,9 +8,9 @@ spring:
     driverClassName: org.h2.Driver
   jpa:
     show-sql: true
-    open-in-view=true: false
   liquibase:
     change-log: changelog/db.changelog-master.xml
     enabled: true
 server.port: 9000
+
 student.information: http://localhost:9001
