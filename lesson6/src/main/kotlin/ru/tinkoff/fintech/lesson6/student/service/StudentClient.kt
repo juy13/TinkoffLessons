@@ -37,3 +37,4 @@ private const val GET_STUDENTS = "/university/students"
 private const val GET_STUDENT_BY_ID = "/university/student/{studentId}"
 private const val ADD_STUDENT = "/university/add"
 private const val SEARCH_STUDENT = "/university/search"
+

@@ -5,7 +5,6 @@ import ru.tinkoff.fintech.lesson6.student.model.StudentInfo
 
 @Service
 class StudentService (private val studentClient: StudentClient) {
-
     fun getStudents() : List<StudentInfo> {
         return studentClient.getStudents()
     }
