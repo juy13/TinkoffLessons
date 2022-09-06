@@ -6,11 +6,9 @@
       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
     <changeSet id="create" author="jzethar">
         <sql>
-            create table IF NOT EXISTS events (
+            create table IF NOT EXISTS student_info (
             id IDENTITY NOT NULL PRIMARY KEY,
-            type varchar check (type in ('SMS', 'EMAIL', 'PUSH')),
-            body varchar  NOT NULL,
-            status varchar check (status in ('NEW', 'IN_PROCESS', 'DONE', 'ERROR'))
+            logging varchar NOT NULL
             )
         </sql>
     </changeSet>

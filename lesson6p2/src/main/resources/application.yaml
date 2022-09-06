@@ -12,4 +12,5 @@ spring:
     change-log: changelog/db.changelog-master.xml
     enabled: true
 server.port: 9000
+
 student.information: http://localhost:9001
