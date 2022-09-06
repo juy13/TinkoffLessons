@@ -34,7 +34,7 @@ class StudentControllerTest @Autowired constructor(private val mockMvc: MockMvc,
 
 	@BeforeEach
 	private fun initMock() {
-		every { studentClient.getStudents() } returns listOfStudents
+		every { studentClient.getStudents() } returns listOfStudents.toSet()
 		every { studentClient.getStudent(any()) } answers {
 			listOfStudents.find { it.id == firstArg() }
 				?: StudentInfo(

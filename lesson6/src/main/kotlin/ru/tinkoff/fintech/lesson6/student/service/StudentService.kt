@@ -1,28 +1,30 @@
 package ru.tinkoff.fintech.lesson6.student.service
 
 import org.springframework.stereotype.Service
+import ru.tinkoff.fintech.lesson6.student.model.FullName
+import ru.tinkoff.fintech.lesson6.student.model.Student
 import ru.tinkoff.fintech.lesson6.student.model.StudentInfo
 
 @Service
 class StudentService (private val studentClient: StudentClient) {
 
-    fun getStudents() : List<StudentInfo> {
+    fun getStudents() : Set<StudentInfo> {
         return studentClient.getStudents()
     }
 
-    fun getStudent(studentId: Int): StudentInfo {
+    fun getStudent(studentId: Int): StudentInfo? {
         require(studentId >= 0)
         return studentClient.getStudent(studentId)
     }
 
-    fun newStudent(studentInfo: StudentInfo): StudentInfo
+    fun newStudent(fullName: FullName): StudentInfo
     {
-        return studentClient.newStudent(studentInfo)
+        return studentClient.newStudent(fullName)
     }
 
-    fun search4Students(degree: String, pageNo : Int, pageSize : Int): List<StudentInfo> {
-        require(degree.isNotEmpty() && pageNo >= 0 && pageSize >= 0 )
-        return studentClient.search4Students(degree, pageNo, pageSize)
+    fun search4StudentId(firstName: String, secondName: String, degree: String): Set<StudentInfo> {
+        require(firstName.isNotEmpty() && secondName.isNotEmpty() && degree.isNotEmpty())
+        return studentClient.search4StudentId(firstName, secondName, degree)
     }
 
 }
