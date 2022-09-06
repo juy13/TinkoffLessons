@@ -8,3 +8,4 @@ data class FullName(
         return fullName.firstName == firstName && fullName.lastName == lastName
     }
 }
+

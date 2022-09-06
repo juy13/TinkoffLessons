@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.util.LinkedMultiValueMap
-import ru.tinkoff.fintech.lesson6.student.model.FullName
 import ru.tinkoff.fintech.lesson6.student.model.StudentInfo
 import ru.tinkoff.fintech.lesson6.student.service.StudentClient
 
@@ -35,24 +34,35 @@ class StudentControllerTest @Autowired constructor(private val mockMvc: MockMvc,
 
 	@BeforeEach
 	private fun initMock() {
-		every { studentClient.getStudents() } returns listOfStudents.toSet()
-		every { studentClient.getStudent(any()) } answers { listOfStudents.find { it.id == firstArg() } }
-		every { studentClient.newStudent(any()) } answers {
-			val index = listOfStudents.last().id
-			val studentInfo = StudentInfo(
-				index + 1,
-				"unknown",
-				firstArg(),
-				0F,
-				"unknown",
-				"unknown"
-			)
-			listOfStudents.add(studentInfo)
-			studentInfo
+		every { studentClient.getStudents() } returns listOfStudents
+		every { studentClient.getStudent(any()) } answers {
+			listOfStudents.find { it.id == firstArg() }
+				?: StudentInfo(
+					-1,
+					"unknown",
+					"unknown",
+					"unknown",
+					-1F, "unknown",
+					"unknown"
+				)
 		}
-		every { studentClient.search4StudentId(any(), any(), any()) } answers {
-			val fullName = FullName(firstArg<String>(), secondArg<String>())
-			listOfStudents.filter { (fullName in it.fullName) && (it.degree == thirdArg()) }.toSet()
+		every { studentClient.newStudent(any()) } answers {
+			listOfStudents.add(firstArg())
+			firstArg()
+		}
+		every { studentClient.search4Students(any(), any(), any())} answers {
+			val pageNo = secondArg<Int>()
+			val pageSize = thirdArg<Int>()
+			listOfStudents.filter { (it.degree == firstArg())}.let {
+				val n = pageNo - 1
+				val st = n * pageSize
+				if(st > it.size) {
+					it.subList(st, st + (it.size - st))
+				}
+				else {
+					it.subList(st, st + pageSize)
+				}
+			}
 		}
 	}
 
@@ -66,7 +76,7 @@ class StudentControllerTest @Autowired constructor(private val mockMvc: MockMvc,
 	fun `get list of students`() {
 		val students = getStudentList()
 		println(students)
-		Assertions.assertEquals(listOfStudents.toSet(), students)
+		Assertions.assertEquals(listOfStudents, students)
 	}
 
 	@Test
@@ -76,7 +86,8 @@ class StudentControllerTest @Autowired constructor(private val mockMvc: MockMvc,
 		Assertions.assertEquals(StudentInfo(
 			1,
 			"master",
-			FullName("Petr", "Petrov"),
+			"Petr",
+			"Petrov",
 			3.5F,
 			"E",
 			"Not Good"
@@ -85,91 +96,79 @@ class StudentControllerTest @Autowired constructor(private val mockMvc: MockMvc,
 
 	@Test
 	fun `add new student`() {
-		val newStudent = FullName("Tigran", "Tigranov")
+		val newStudent = StudentInfo(
+			5,
+			"master",
+			"Tigran",
+			"Tigranov",
+			3.5F,
+			"E",
+			"Not Good"
+		)
 
 		val addedStudent: StudentInfo = addStudent(newStudent).readResponse()
-		val listOfStudents = findStudent(newStudent.firstName, newStudent.lastName, "unknown").readResponse<Set<StudentInfo>>()
+		val student = getOneStudent(5).readResponse<StudentInfo>()
 
-		Assertions.assertEquals(setOf(addedStudent), listOfStudents)
+		Assertions.assertEquals(addedStudent, student)
 	}
 
 	@Test
 	fun `find a student with default val`() {
-		val newStudent = FullName("Igor", "Ivanov")
-
-		val listOfStudents = findStudent(newStudent.firstName, newStudent.lastName).readResponse<Set<StudentInfo>>()
+		val listOfStudents = findStudent().readResponse<List<StudentInfo>>()
 
 		Assertions.assertEquals(
-			setOf(
-				StudentInfo(
-					2,
-					"bachelor",
-					FullName("Igor", "Ivanov"),
-					5F,
-					"A",
-					"Excellent"
-				)
-			),
+			bachelorStudents,
 			listOfStudents
 		)
 	}
 
 	@Test
 	fun `find a student`() {
-		val newStudent = FullName("Petr", "Petrov")
 
-		val listOfStudents = findStudent(newStudent.firstName, newStudent.lastName, "master").readResponse<Set<StudentInfo>>()
+		val listOfStudents = findStudent("master").readResponse<List<StudentInfo>>()
 
 		Assertions.assertEquals(
-			setOf(
-				StudentInfo(
-					1,
-					"master",
-					FullName("Petr", "Petrov"),
-					3.5F,
-					"E",
-					"Not Good"
-				)
-			),
+			masterStudents,
 			listOfStudents
 		)
 	}
 
 	@Test
-	fun `find a students`() {
-		val newStudent = FullName("Igor", "Ivanov")
+	fun `find a student with paging`() {
 
-		val listOfStudents = findStudent(newStudent.firstName, newStudent.lastName).readResponse<Set<StudentInfo>>()
+		val pageNo = 2
+		val pageSize = 1
+		val listOfStudents = findStudent("master", 2, 1).readResponse<List<StudentInfo>>()
 
 		Assertions.assertEquals(
-			setOf(
-				StudentInfo(
-					2,
-					"bachelor",
-					FullName("Igor", "Ivanov"),
-					5F,
-					"A",
-					"Excellent"
-				)
-			),
+			masterStudents.let {
+				val n = 2 - 1
+				val st = n * 1
+				if(st > it.size) {
+					it.subList(st, st + (it.size - st))
+				}
+				else {
+					it.subList(st, st + 1)
+				}
+			},
 			listOfStudents
 		)
 	}
 
-	private fun findStudent(firstName: String, lastName: String, degree: String? = null): ResultActions =
+	private fun findStudent(degree: String? = null, pageNo : Int? = null, pageSize : Int? = null): ResultActions =
 		mockMvc.perform(
 			get("/university/search")
-				.params(createParams("firstName" to firstName, "lastName" to lastName, "degree" to degree))
+				.params(createParams( "degree" to degree, "pageNo" to pageNo, "pageSize" to pageSize))
 		)
 
-	private fun addStudent(newStudent: FullName): ResultActions =
+	private fun addStudent(newStudent: StudentInfo): ResultActions =
 		mockMvc.perform(
 			post("/university/add")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(newStudent))
 		)
 
-	private fun getStudentList(): Set<StudentInfo> =
+	private fun getStudentList(): List<StudentInfo> =
 		mockMvc.get("/university/students").readResponse()
 
 	private fun getOneStudent(studentId: Int): ResultActions =
@@ -194,7 +193,8 @@ class StudentControllerTest @Autowired constructor(private val mockMvc: MockMvc,
 		StudentInfo(
 			0,
 			"bachelor",
-			FullName("Ivan", "Ivanov"),
+			"Ivan",
+			"Ivanov",
 			4.5F,
 			"B",
 			"Good"
@@ -202,7 +202,8 @@ class StudentControllerTest @Autowired constructor(private val mockMvc: MockMvc,
 		StudentInfo(
 			1,
 			"master",
-			FullName("Petr", "Petrov"),
+			"Petr",
+			"Petrov",
 			3.5F,
 			"E",
 			"Not Good"
@@ -210,7 +211,8 @@ class StudentControllerTest @Autowired constructor(private val mockMvc: MockMvc,
 		StudentInfo(
 			2,
 			"bachelor",
-			FullName("Igor", "Ivanov"),
+			"Igor",
+			"Ivanov",
 			5F,
 			"A",
 			"Excellent"
@@ -218,8 +220,95 @@ class StudentControllerTest @Autowired constructor(private val mockMvc: MockMvc,
 		StudentInfo(
 			3,
 			"master",
-			FullName("Igor", "Ivanov"),
+			"Igor",
+			"Ivanov",
 			4.6F,
+			"B",
+			"Good"
+		)
+	)
+
+	private val masterStudents = mutableListOf(
+		StudentInfo(
+			1,
+			"master",
+			"Petr", "Petrov",
+			3.5F,
+			"E",
+			"Not Good"
+		),
+		StudentInfo(
+			3,
+			"master",
+			"Igor", "Ivanov",
+			4.6F,
+			"B",
+			"Good"
+		)
+	)
+
+	private val bachelorStudents = mutableListOf(
+		StudentInfo(
+			0,
+			"bachelor",
+			"Ivan", "Ivanov",
+			4.5F,
+			"B",
+			"Good"
+		),
+		StudentInfo(
+			2,
+			"bachelor",
+			"Igor", "Ivanov",
+			5F,
+			"A",
+			"Excellent"
+		)
+	)
+
+	private val listOfStudents2 = mutableListOf(
+		StudentInfo(
+			0,
+			"bachelor",
+			"Ivan",
+			"Ivanov",
+			4.5F,
+			"B",
+			"Good"
+		),
+		StudentInfo(
+			1,
+			"master",
+			"Petr",
+			"Petrov",
+			3.5F,
+			"E",
+			"Not Good"
+		),
+		StudentInfo(
+			2,
+			"bachelor",
+			"Igor",
+			"Ivanov",
+			5F,
+			"A",
+			"Excellent"
+		),
+		StudentInfo(
+			3,
+			"master",
+			"Igor",
+			"Ivanov",
+			4.6F,
+			"B",
+			"Good"
+		),
+		StudentInfo(
+			4,
+			"bachelor",
+			"Igor",
+			"Ivanovich",
+			4.2F,
 			"B",
 			"Good"
 		)

@@ -4,5 +4,6 @@ spring:
 server.port: 9000
 
 student.information: http://localhost:9001
+
 connect.timeout.in.sec: 30
 read.timeout.in.seconds: 60
